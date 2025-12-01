@@ -3,88 +3,118 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>출입증</title>
-
-<link rel="stylesheet" href="https://lsh595.github.io/entry-system/style.css" />
-
+<title>출입 증명서</title>
+<link rel="stylesheet" href="./style.css" />
 <style>
-#cardBox {
-  border: 4px solid #8b0e0e;
-  border-radius: 30px;
-  padding: 2.2rem 2rem;
-  margin: 2rem auto;
-  max-width: 700px;
-  background: #fff;
-  position: relative;
-}
+  body { background: #ffffff; }
+  #entryBox {
+    max-width: 650px;
+    margin: 2rem auto;
+    padding: 1.8rem;
+    border: 5px solid #7d140f;
+    border-radius: 18px;
+    background: #fff;
+  }
 
-#stamp {
-  width: 120px;
-  height: 120px;
-  background: #6e0c0c;
-  border-radius: 50%;
-  position: absolute;
-  top: 2.3rem;
-  right: 2.3rem;
-}
+  .itemText {
+    font-size: 1.3rem;
+    line-height: 2.3rem;
+    font-weight: 500;
+    color: #3b3b3b;
+  }
 
-#info p {
-  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
-  margin: 1.2rem 0;
-  font-weight: 520;
-  line-height: 1.55;      /* 글씨 간격 비율 원상 복원 */
-  letter-spacing: -0.2px; /* 글자간 간격 조정 */
-}
+  #goBtn {
+    width: 100%;
+    margin-top: 2rem;
+    background: linear-gradient(to right, #7d0f0f, #9c1b1b);
+    color: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 1.6rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+  }
 
-#goBtn {
-  font-size: clamp(1.35rem, 3vw, 1.8rem);
-  margin-top: 2rem;
-  transition: 0.2s;
-}
+  #goBtn:disabled {
+    background: #555;
+    cursor: default;
+  }
+
+  .footer {
+    margin-top: 2rem;
+    font-size: 0.9rem !important;
+  }
 </style>
-
 </head>
+
 <body>
+<h1 style="text-align:center; color:#7d0f0f; margin-top:1rem; font-size:2.3rem; font-weight:800;">
+휴 일 출 입 증
+<br>
+GIẤY XÁC NHẬN VÀO TRƯỜNG
+</h1>
 
-<h1>휴 일 출 입 증<br>GIẤY XÁC NHẬN VÀO TRƯỜNG</h1>
+<div id="entryBox">
+  <p id="idField" class="itemText"></p>
+  <p id="nameField" class="itemText"></p>
+  <p id="dateField" class="itemText"></p>
+  <p id="reasonField" class="itemText"></p>
+  <p id="teacherField" class="itemText"></p>
+  <p id="entryField" class="itemText"></p>
+  <p id="useField" class="itemText"></p>
 
-<div id="cardBox">
-  <div id="stamp"></div>
-  <div id="info"></div>
+  <button id="goBtn">ĐI RA</button>
 </div>
 
-<button id="goBtn">ĐI RA</button>
-
 <footer class="footer">
-  <p>© 2025 Online Entry. All rights reserved.</p>
+  © 2025 Online Entry. All rights reserved.
 </footer>
 
 <script>
-const p = new URLSearchParams(window.location.search);
-const info = document.getElementById("info");
+const url = new URL(location.href);
+const p = url.searchParams;
+
+// 값 불러오기
+const id = p.get("id");
+const name = p.get("name");
+const date = p.get("date");
+const reason = p.get("reason");
+const teacher = p.get("teacher");
+const entry = p.get("entry");
+let use = p.get("use");
+
+document.getElementById("idField").innerHTML = `학번(Mã số lớp): ${id}`;
+document.getElementById("nameField").innerHTML = `이름(Họ tên): ${name}`;
+document.getElementById("dateField").innerHTML = `날짜(Ngày hôm nay): ${date}`;
+document.getElementById("reasonField").innerHTML = `사유(Lý do): ${reason}`;
+document.getElementById("teacherField").innerHTML = `지도 교사(GV chủ nhiệm): ${teacher}`;
+document.getElementById("entryField").innerHTML = `출입 여부(Ra vào): ${entry}`;
+document.getElementById("useField").innerHTML = `사용 여부(Đã sử dụng): ${use}`;
+
+// 버튼 요소
 const goBtn = document.getElementById("goBtn");
 
-// 기존 데이터 출력
-info.innerHTML = `
-  <p>학번(Mã số lớp): ${p.get("id")}</p>
-  <p>이름(Họ tên): ${p.get("name")}</p>
-  <p>날짜(Ngày hôm nay): ${p.get("date")}</p>
-  <p>사유(Lý do): ${p.get("reason")}</p>
-  <p>지도 교사(GV chủ nhiệm): ${p.get("teacher")}</p>
-  <p>출입 여부(Ra vào): ${p.get("entry")}</p>
-  <p id="useField">사용 여부(Đã sử dụng): ${p.get("use")}</p>
-`;
+// 같은 QR 재사용 방지용 localStorage key
+const usedKey = "used_" + id;
+const savedState = localStorage.getItem(usedKey);
 
-// 버튼 이벤트: 사용 여부 변경 + 재사용 방지
+// 이미 사용된 기록이 있으면 버튼 잠금
+if (savedState === "1") {
+  goBtn.textContent = "이미 처리됨";
+  goBtn.disabled = true;
+  document.getElementById("useField").innerHTML =
+    "사용 여부(Đã sử dụng): 사용함(Đã sử dụng)";
+}
+
+// 버튼 클릭 이벤트
 goBtn.addEventListener("click", () => {
-  const useField = document.getElementById("useField");
-
-  useField.innerHTML = "사용 여부(Đã sử dụng): 사용함(Đã sử dụng)";
+  document.getElementById("useField").innerHTML =
+    "사용 여부(Đã sử dụng): 사용함(Đã sử dụng)";
   goBtn.textContent = "처리됨";
-  goBtn.style.background = "#444";
-  goBtn.style.color = "#fff";
-  goBtn.style.pointerEvents = "none"; // 버튼 비활성화
-  history.pushState(null, null, location.href); // 뒤로가기 무력화
+  goBtn.disabled = true;
+
+  localStorage.setItem(usedKey, "1");
 });
 </script>
 
