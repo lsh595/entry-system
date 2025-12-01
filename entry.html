@@ -4,55 +4,46 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>출입 증명서</title>
-<link rel="stylesheet" href="./style.css" />
+<link rel="stylesheet" href="/entry-system/style.css" />
+
 <style>
-  body { background: #ffffff; }
-  #entryBox {
-    max-width: 650px;
-    margin: 2rem auto;
-    padding: 1.8rem;
-    border: 5px solid #7d140f;
-    border-radius: 18px;
-    background: #fff;
-  }
-
-  .itemText {
-    font-size: 1.3rem;
-    line-height: 2.3rem;
-    font-weight: 500;
-    color: #3b3b3b;
-  }
-
-  #goBtn {
-    width: 100%;
-    margin-top: 2rem;
-    background: linear-gradient(to right, #7d0f0f, #9c1b1b);
-    color: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-    font-size: 1.6rem;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-  }
-
-  #goBtn:disabled {
-    background: #555;
-    cursor: default;
-  }
-
-  .footer {
-    margin-top: 2rem;
-    font-size: 0.9rem !important;
-  }
+#entryBox {
+  max-width: 650px;
+  margin: 2rem auto;
+  padding: 1.8rem;
+  border: 5px solid #7d140f;
+  border-radius: 18px;
+  background: #fff;
+}
+.itemText {
+  font-size: 1.3rem;
+  line-height: 2.3rem;
+  font-weight: 500;
+  color: #272727;
+}
+#goBtn {
+  width: 100%;
+  margin-top: 2rem;
+  background: linear-gradient(to right, #7d0f0f, #9c1b1b);
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: 1.6rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+#goBtn:disabled {
+  background: #555;
+  cursor: default;
+}
 </style>
 </head>
 
 <body>
+
 <h1 style="text-align:center; color:#7d0f0f; margin-top:1rem; font-size:2.3rem; font-weight:800;">
-휴 일 출 입 증
-<br>
-GIẤY XÁC NHẬN VÀO TRƯỜNG
+휴 일 출 입 증<br>GIẤY XÁC NHẬN VÀO TRƯỜNG
 </h1>
 
 <div id="entryBox">
@@ -72,48 +63,34 @@ GIẤY XÁC NHẬN VÀO TRƯỜNG
 </footer>
 
 <script>
-const url = new URL(location.href);
-const p = url.searchParams;
+const p = new URLSearchParams(location.search);
 
-// 값 불러오기
-const id = p.get("id");
-const name = p.get("name");
-const date = p.get("date");
-const reason = p.get("reason");
-const teacher = p.get("teacher");
-const entry = p.get("entry");
-let use = p.get("use");
+// 값 세팅
+document.getElementById("idField").innerHTML = `학번(Mã số lớp): ${p.get("id")}`;
+document.getElementById("nameField").innerHTML = `이름(Họ tên): ${p.get("name")}`;
+document.getElementById("dateField").innerHTML = `날짜(Ngày hôm nay): ${p.get("date")}`;
+document.getElementById("reasonField").innerHTML = `사유(Lý do): ${p.get("reason")}`;
+document.getElementById("teacherField").innerHTML = `지도 교사(GV chủ nhiệm): ${p.get("teacher")}`;
+document.getElementById("entryField").innerHTML = `출입 여부(Ra vào): ${p.get("entry")}`;
+document.getElementById("useField").innerHTML = `사용 여부(Đã sử dụng): ${p.get("use")}`;
 
-document.getElementById("idField").innerHTML = `학번(Mã số lớp): ${id}`;
-document.getElementById("nameField").innerHTML = `이름(Họ tên): ${name}`;
-document.getElementById("dateField").innerHTML = `날짜(Ngày hôm nay): ${date}`;
-document.getElementById("reasonField").innerHTML = `사유(Lý do): ${reason}`;
-document.getElementById("teacherField").innerHTML = `지도 교사(GV chủ nhiệm): ${teacher}`;
-document.getElementById("entryField").innerHTML = `출입 여부(Ra vào): ${entry}`;
-document.getElementById("useField").innerHTML = `사용 여부(Đã sử dụng): ${use}`;
-
-// 버튼 요소
 const goBtn = document.getElementById("goBtn");
+const usedKey = "used_" + p.get("id");
 
-// 같은 QR 재사용 방지용 localStorage key
-const usedKey = "used_" + id;
-const savedState = localStorage.getItem(usedKey);
-
-// 이미 사용된 기록이 있으면 버튼 잠금
-if (savedState === "1") {
+// 이미 사용한 QR인지 검사
+if (localStorage.getItem(usedKey) === "1") {
   goBtn.textContent = "이미 처리됨";
   goBtn.disabled = true;
   document.getElementById("useField").innerHTML =
     "사용 여부(Đã sử dụng): 사용함(Đã sử dụng)";
 }
 
-// 버튼 클릭 이벤트
+// 버튼 클릭 시 처리 로직
 goBtn.addEventListener("click", () => {
   document.getElementById("useField").innerHTML =
     "사용 여부(Đã sử dụng): 사용함(Đã sử dụng)";
   goBtn.textContent = "처리됨";
   goBtn.disabled = true;
-
   localStorage.setItem(usedKey, "1");
 });
 </script>
