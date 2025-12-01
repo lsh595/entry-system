@@ -29,12 +29,13 @@ h1 {
   line-height: 1.3;
 }
 
+/* ===== 줄 간격 수정된 부분 ===== */
 p {
   font-size: var(--font-medium);
-  margin: 1.6rem 0;      /* 줄 간격 여유 추가 */
-  line-height: 1.8;      /* 텍스트 세로 간격 증가 */
+  margin: 1.6rem 0;         /* 간격 넓힘 */
+  line-height: 1.8;         /* 줄 간격 증가 */
 }
-
+/* ================================= */
 
 button {
   background: linear-gradient(to right, var(--main-color), var(--accent-color));
@@ -51,7 +52,9 @@ button {
 }
 button:active { transform: scale(0.97); }
 
-#personalForm, #qrGenerateForm {
+/* ===== 테두리 추가 (핵심) ===== */
+#personalForm,
+#qrGenerateForm {
   background: #fff;
   max-width: 650px;
   margin: auto;
@@ -59,7 +62,11 @@ button:active { transform: scale(0.97); }
   border-radius: 18px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.10);
   text-align: left;
+
+  border: 4px solid var(--main-color);   /* 테두리 추가 */
+  border-left-width: 8px;               /* 왼쪽 테두리 강조 */
 }
+/* ================================= */
 
 input, select {
   padding: 12px;
