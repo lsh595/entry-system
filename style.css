@@ -53,20 +53,21 @@ button {
 }
 button:active { transform: scale(0.97); }
 
-/* 폼 + 결과창 공통 스타일 */
 #personalForm, #qrGenerateForm {
   background: #fff;
   max-width: 650px;
   margin: auto;
-  padding: 1.8rem;
 
-  /* 너가 요청한 빨간 테두리 + 둥근 모서리 */
+  /* 패딩 비율 수정 → 테두리 시각적 균형 맞춤 */
+  padding: 1.8rem 2.4rem 1.8rem 2.8rem;
+  /*   위  오른쪽  아래  왼쪽  */
+
   border: 5px solid var(--main-color);
   border-radius: 25px;
-
   box-shadow: 0 8px 24px rgba(0,0,0,0.10);
   text-align: left;
 }
+
 
 /* 입력 영역 디자인 */
 input, select {
@@ -89,3 +90,4 @@ label {
   color: #555;
   margin-top: 3rem;
 }
+
